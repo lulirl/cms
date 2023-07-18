@@ -30,7 +30,7 @@ function CreateChallengePage() {
       [name]: value,
     }));
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -57,9 +57,9 @@ function CreateChallengePage() {
 
   return (
     <>
-    <div className="header">
-    <h1 className="header-title">Creating a New Challenge</h1>
-    <Link to="/" className="header-button">Go back</Link>
+    <div className="header1">
+    <h1 className="header-title1">Creating a New Challenge</h1>
+    <Link to="/" className="header-button1">Go back</Link>
     </div>
     <div className="container">
       <h1>Create a New Challenge</h1>

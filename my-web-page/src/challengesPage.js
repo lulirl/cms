@@ -1,17 +1,25 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { Link } from 'react-router-dom';
-import { db } from "./appfirebase/firebase.ts";
+import { Link, useNavigate } from 'react-router-dom';
+import { db, signOut, auth } from "./appfirebase/firebase.ts";
 import './ChallengesList.css';
 
 function ChallengesPage() {
   const [challenges, setChallenges] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [challengesPerPage] = useState(4);
+  const navigate = useNavigate()
   const indexOfLastChallenge = currentPage * challengesPerPage;
   const indexOfFirstChallenge = indexOfLastChallenge - challengesPerPage;
   const currentChallenges = challenges.slice(indexOfFirstChallenge, indexOfLastChallenge);
-
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/login")
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   useEffect(() => {
@@ -31,9 +39,14 @@ function ChallengesPage() {
 
   return (
     <>
-    <div className="header">
-    <h1 className="header-title">Predefined Challenges</h1>
-    <Link to="/create-new-challenge" className="header-button">Create a New Challenge</Link>
+      <div className="header">
+      <div className="left-section">
+        <h1 className="header-title">Predefined Challenges</h1>
+      </div>
+      <div className="right-section">
+        <Link to="/create-new-challenge" className="header-button">Create a New Challenge</Link>
+        <button onClick={handleLogout} className="logout-button">Log Out</button>
+      </div>
     </div>
     <div className="challenges-list">
     {currentChallenges.map((challenge) => (

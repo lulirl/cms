@@ -78,9 +78,9 @@ function EditChallenge() {
 
   return (
     <>
-    <div className="header">
-    <h1 className="header-title">Editing Predefined Challenges</h1>
-    <Link to="/" className="header-button">Go back</Link>
+    <div className="header1">
+    <h1 className="header-title1">Editing Predefined Challenges</h1>
+    <Link to="/" className="header-button1">Go back</Link>
     </div>
     <div className="edit-challenge-container">
     <h2 className="edit-challenge-heading">Edit Challenge</h2>
