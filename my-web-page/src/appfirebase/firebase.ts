@@ -16,7 +16,7 @@ import {
     updateDoc,
     where,
   } from 'firebase/firestore';
-  import { getStorage, ref } from 'firebase/storage';
+  import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
   import {
     getAuth,    
   } from 'firebase/auth';
@@ -59,5 +59,7 @@ export {
     getDoc,
     deleteDoc,
     ref,
+    uploadBytes, 
+    getDownloadURL,
   };
   

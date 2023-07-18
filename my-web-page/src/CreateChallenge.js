@@ -1,19 +1,28 @@
 import { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
+import {storage, ref, getDownloadURL, uploadBytes} from "../src/appfirebase/firebase.ts"
 import { db } from './appfirebase/firebase.ts';
 import './CreateChallengePage.css';
 import { Link } from 'react-router-dom';
 function CreateChallengePage() {
+  const[selectedFile, setSelectedFile] = useState(null)
+  const [imageUrl, setImageUrl] = useState('');
   const [challengeData, setChallengeData] = useState({
     challengeName: '',
-    challengeGoal: '',
+    goal: '',
     description: '',
     duration: '',
     goalShort: '',
-    challengeHabits: ['', '', '', ''],
+    habitTitles: ['', '', '', ''],
     category: '',
+    picture:''
   });
-
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    const imageUrl = URL.createObjectURL(file);
+    setImageUrl(imageUrl);
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setChallengeData((prevData) => ({
@@ -26,13 +35,23 @@ function CreateChallengePage() {
     e.preventDefault();
 
     try {
+      const storageRef = ref(storage, `challengeImages/${selectedFile.name}`);
+      await uploadBytes(storageRef, selectedFile);
+
+  
+      const imageUrl = await getDownloadURL(storageRef);
+
       const challengesRef = collection(db, 'challengeTemplates');
+      challengeData.picture = imageUrl
+      challengeData.goal = challengeData.challengeName
+      challengeData.duration = Number(challengeData.duration)
+
       await addDoc(challengesRef, challengeData);
-      console.log('Challenge added successfully');
-      // Optionally, you can redirect the user to another page or display a success message.
+      alert('Challenge added successfully');
+     
     } catch (error) {
-      console.error('Error adding challenge:', error);
-      // Optionally, you can display an error message to the user.
+      alert('Error adding challenge:', error);
+
     }
   };
 
@@ -58,6 +77,20 @@ function CreateChallengePage() {
           pattern="^[a-zA-Z\s]+$" 
           title="Please enter a valid challenge name (3-50 characters, alphabets only)"
         />
+     <label htmlFor="image">Picture (.jpg .png) :</label>
+      <input
+        id="image"
+        type="file"
+        value={challengeData.picture}
+        accept=".png, .jpg, .jpeg"
+        onChange={handleImageUpload}
+        title="Upload a JPG or PNG file"
+        style={{border: 'none'}}
+      />
+    {imageUrl &&
+      <img src={imageUrl} alt="Uploaded file" style={{ width: '200px' }} />
+      }
+
 
         <label htmlFor="description">Description:</label>
         <textarea
@@ -68,6 +101,7 @@ function CreateChallengePage() {
           required
           minLength="10" 
           maxLength="300"
+          title="Please provide a challenge description"
         ></textarea>
 
         <label htmlFor="duration">Duration (in days):</label>
@@ -104,22 +138,24 @@ function CreateChallengePage() {
           title="Please enter a valid category (Health, Environmental, Educational, or Financial)"
         />
 
-        <label htmlFor="challengeHabits">Challenge Habits:</label>
+        <label htmlFor="habitTitles">Challenge Habits:</label>
         <div className="challenge-habits">
-          {challengeData.challengeHabits.map((habit, index) => (
+          {challengeData.habitTitles.map((habit, index) => (
             <input
               key={index}
               type="text"
               value={habit}
               onChange={(e) => {
-                const updatedHabits = [...challengeData.challengeHabits];
+                const updatedHabits = [...challengeData.habitTitles];
                 updatedHabits[index] = e.target.value;
+                const nonEmptyHabits = updatedHabits.filter((habit) => habit.trim() !== '');
+
                 setChallengeData((prevData) => ({
                   ...prevData,
-                  challengeHabits: updatedHabits,
+                  habitTitles: nonEmptyHabits,
                 }));
               }}
-              required
+              required={index===0}
               pattern="^[a-zA-Z\s]+$" 
               title="Please enter up to 4 daily habits per challenge"
             />

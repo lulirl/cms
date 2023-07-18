@@ -1,14 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db, storage, ref } from '../src/appfirebase/firebase.ts'; 
+import { db, storage, ref, uploadBytes, getDownloadURL } from '../src/appfirebase/firebase.ts'; 
 import { Link } from 'react-router-dom';
 import './EditChallenge.css';
 
 function EditChallenge() {
   const { id } = useParams(); 
   const [challenge, setChallenge] = useState(null);
-
+  const [imageUrl, setImageUrl] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   useEffect(() => {
     const fetchChallenge = async () => {
       try {
@@ -34,7 +35,17 @@ function EditChallenge() {
       [name]: value,
     }));
   };
-
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const storageRef = ref(storage, `challengeImages/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const imageUrl = await getDownloadURL(storageRef);
+      setImageUrl(imageUrl);
+    }
+  };
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -46,15 +57,18 @@ function EditChallenge() {
         console.error('Invalid duration:', challenge.duration);
         return;
       }
+      const nonEmptyHabits = challenge.habitTitles.filter((habit) => habit.trim() !== '');
       const updatedChallenge = {
         ...challenge,
         duration: durationNumber,
+        picture: imageUrl ? imageUrl : challenge.picture,
+        habitTitles: nonEmptyHabits
       };
-  
+      console.log(updatedChallenge, 'updated')
       await updateDoc(docRef, updatedChallenge);
-      console.log('Challenge updated successfully');
+      alert('Challenge updated successfully');
     } catch (error) {
-      console.error('Error updating challenge:', error);
+      alert('Error updating challenge:', error);
     }
   };
 
@@ -101,6 +115,20 @@ function EditChallenge() {
           title="Please enter a valid category (Health, Environmental, Educational, or Financial)"
         />
       </div>
+      <label htmlFor="image" className="form-label form-label-left">Picture (.jpg .png) :</label>
+      <input
+        id="image"
+        type="file"
+        accept=".png, .jpg, .jpeg"
+        onChange={handleImageUpload}
+        title="Upload a JPG or PNG file"
+        className="form-input"
+        style={{border: 'none'}}
+      />
+      <div className="image-container" style={{ display: 'flex', justifyContent: 'center', marginLeft: "5%" }}>
+        <img src={imageUrl ? imageUrl : challenge.picture} alt="Uploaded file" style={{ width: '200px' }} />
+    </div>
+
       <div className="form-group">
         <label htmlFor="description" className="form-label">Description:</label>
         <textarea
@@ -111,6 +139,7 @@ function EditChallenge() {
           className="form-textarea"
           minLength="10" 
           maxLength="300"
+          title="Please provide a challenge description"
           required
         ></textarea>
       </div>
@@ -153,6 +182,7 @@ function EditChallenge() {
               handleInputChange({ target: { name: 'habitTitles', value: updatedHabitTitles } });
             }}
             className="form-input1"
+            title="Please enter up to 4 daily habits per challenge"
           />
           ))}
           </div>
