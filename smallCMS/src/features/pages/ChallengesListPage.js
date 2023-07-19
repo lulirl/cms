@@ -1,41 +1,28 @@
-import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { Link, useNavigate } from 'react-router-dom';
-import { db, signOut, auth } from "./appfirebase/firebase.ts";
+import {  useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './ChallengesList.css';
+import { fetchChallenges, handleDeleteChallenge } from '../shared/helpers/listChallengesHelper';
 
-function ChallengesPage() {
+function ChallengesListPage({ logout}) {
+  
   const [challenges, setChallenges] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [challengesPerPage] = useState(4);
-  const navigate = useNavigate()
   const indexOfLastChallenge = currentPage * challengesPerPage;
   const indexOfFirstChallenge = indexOfLastChallenge - challengesPerPage;
-  const currentChallenges = challenges.slice(indexOfFirstChallenge, indexOfLastChallenge);
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate("/login")
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const currentChallenges = challenges?.slice(indexOfFirstChallenge, indexOfLastChallenge);
+  
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const challengesRef = collection(db, 'challengeTemplates');
-        const snapshot = await getDocs(challengesRef);
-        const challengesData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setChallenges(challengesData);
-      } catch (error) {
-        console.error('Error fetching challenges:', error);
-      }
+    const fetchChallengesData = async () => {
+      const challengesData = await fetchChallenges();
+      setChallenges(challengesData);
     };
+  
+    fetchChallengesData();
+  }, [challenges]);
 
-    fetchData();
-  }, []);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 
   return (
     <>
@@ -45,7 +32,7 @@ function ChallengesPage() {
       </div>
       <div className="right-section">
         <Link to="/create-new-challenge" className="header-button">Create a New Challenge</Link>
-        <button onClick={handleLogout} className="logout-button">Log Out</button>
+        <button onClick={logout} className="logout-button">Log Out</button>
       </div>
     </div>
     <div className="challenges-list">
@@ -56,10 +43,18 @@ function ChallengesPage() {
         <p className="challenge-category">{challenge.category}</p>
         <p className="challenge-description">{challenge.goalShort}</p>
         <div className="edit-container">
-        <Link to={`/EditChallenge/${challenge.id}`} className="edit-button">
-            Edit
-          </Link>
+          <div>
+            <Link to={`/EditChallenge/${challenge.id}`} className="edit-button">
+              Edit
+            </Link>
           </div>
+          <div>
+            <button className="delete-button" onClick={() => handleDeleteChallenge(challenge.id)}>
+              Delete
+            </button>
+          </div>
+        </div>
+
       </div>
     ))}
   </div>
@@ -76,4 +71,4 @@ function ChallengesPage() {
   )
 }
 
-export default ChallengesPage;
+export default ChallengesListPage;

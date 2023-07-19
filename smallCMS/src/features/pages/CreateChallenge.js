@@ -1,59 +1,16 @@
-import { useState } from 'react';
-import { collection, addDoc } from 'firebase/firestore';
-import {storage, ref, getDownloadURL, uploadBytes} from "./appfirebase/firebase.ts"
-import { db } from './appfirebase/firebase.ts';
-import './CreateChallengePage.css';
 import { Link } from 'react-router-dom';
+import { useCreateChallenge } from '../shared/helpers/createChallengeHelper'
+import './CreateChallengePage.css';
+
 function CreateChallengePage() {
-  const[selectedFile, setSelectedFile] = useState(null)
-  const [imageUrl, setImageUrl] = useState('');
-  const [challengeData, setChallengeData] = useState({
-    challengeName: '',
-    goal: '',
-    description: '',
-    duration: '',
-    goalShort: '',
-    habitTitles: ['', '', '', ''],
-    category: '',
-    picture:''
-  });
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
-    const imageUrl = URL.createObjectURL(file);
-    setImageUrl(imageUrl);
-  };
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setChallengeData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const storageRef = ref(storage, `challengeImages/${selectedFile.name}`);
-      await uploadBytes(storageRef, selectedFile);
-
-  
-      const imageUrl = await getDownloadURL(storageRef);
-
-      const challengesRef = collection(db, 'challengeTemplates');
-      challengeData.picture = imageUrl
-      challengeData.goal = challengeData.challengeName
-      challengeData.duration = Number(challengeData.duration)
-
-      await addDoc(challengesRef, challengeData);
-      alert('Challenge added successfully');
-     
-    } catch (error) {
-      alert('Error adding challenge:', error);
-
-    }
-  };
+  const {
+    setChallengeData,
+    imageUrl,
+    challengeData,
+    handleImageUpload,
+    handleInputChange,
+    handleSubmit,
+  } = useCreateChallenge();
 
   return (
     <>
@@ -148,11 +105,10 @@ function CreateChallengePage() {
               onChange={(e) => {
                 const updatedHabits = [...challengeData.habitTitles];
                 updatedHabits[index] = e.target.value;
-                const nonEmptyHabits = updatedHabits.filter((habit) => habit.trim() !== '');
 
                 setChallengeData((prevData) => ({
                   ...prevData,
-                  habitTitles: nonEmptyHabits,
+                  habitTitles: updatedHabits,
                 }));
               }}
               required={index===0}

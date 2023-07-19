@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword, signOut, auth } from './appfirebase/firebase.ts';
+import { signInWithEmailAndPassword, signOut, auth } from '../../appfirebase/firebase.ts';
 import './LoginForm.css';
-import { useNavigate } from 'react-router-dom';
+import useNavigation from '../hooks/hooks.ts'
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate()
+  const navigate = useNavigation()
   const handleLogin = async (e) => {
     e.preventDefault();
   
