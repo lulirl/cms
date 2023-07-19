@@ -19,7 +19,6 @@ const LoginForm = () => {
       if (allowedEmails.includes(user.email)) {
         setError(''); 
         navigate("/")
-        console.log('loginsuccessful')
       } else {
         setError('Access denied. Please contact support for assistance.');
         await signOut(); 
