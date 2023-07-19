@@ -2,9 +2,10 @@ import {  useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './ChallengesList.css';
 import { fetchChallenges, handleDeleteChallenge } from '../shared/helpers/listChallengesHelper';
-
-function ChallengesListPage({ logout}) {
-  
+import {  signOut, auth } from "../../appfirebase/firebase.ts"
+import useNavigation from '../hooks/hooks.ts';
+function ChallengesListPage() {
+  const navigation = useNavigation();
   const [challenges, setChallenges] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [challengesPerPage] = useState(4);
@@ -23,6 +24,14 @@ function ChallengesListPage({ logout}) {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+    const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigation('/login')
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   return (
     <>
@@ -32,7 +41,7 @@ function ChallengesListPage({ logout}) {
       </div>
       <div className="right-section">
         <Link to="/create-new-challenge" className="header-button">Create a New Challenge</Link>
-        <button onClick={logout} className="logout-button">Log Out</button>
+        <button onClick={()=>handleLogout()} className="logout-button">Log Out</button>
       </div>
     </div>
     <div className="challenges-list">
