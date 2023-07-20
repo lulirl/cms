@@ -62,6 +62,7 @@ export const useEditChallenge = () => {
         duration: durationNumber,
         picture: imageUrl ? imageUrl : challenge.picture,
         habitTitles: nonEmptyHabits,
+        goal: challenge.challengeName
       };
 
       await updateDoc(docRef, updatedChallenge);
