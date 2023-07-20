@@ -47,8 +47,13 @@ export const useEditChallenge = () => {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-
+    event.preventDefault(); 
+    const allHabitsValid = challenge.habitTitles.every((habit) => habit.length <= 129);
+  
+    if (!allHabitsValid) {
+      alert('Error: Please enter up to 129 characters for each habit');
+      return;
+    }
     try {
       const docRef = doc(db, 'challengeTemplates', id);
       const durationNumber = Number(challenge.duration);

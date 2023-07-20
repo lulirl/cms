@@ -50,8 +50,8 @@ function EditChallenge() {
           onChange={handleInputChange}
           className="form-input"
           required
-          pattern="^(Health|Environmental|Educational|Financial)$" 
-          title="Please enter a valid category (Health, Environmental, Educational, or Financial)"
+          pattern="^(Health|Environmental|Educational|Financial)(, (Health|Environmental|Educational|Financial))*$" 
+          title="Please enter one or more valid categories separated by a comma (,): Health, Environmental, Educational, Financial "
         />
       </div>
       <label htmlFor="image" className="form-label form-label-left">Picture (.jpg .png) :</label>
@@ -111,19 +111,20 @@ function EditChallenge() {
         <label htmlFor="habitTitles" className="form-label">Challenge Habits:</label>
         <div className="habitsContainer">
         {challenge.habitTitles.map((habit, index) => (
-          <input
-            key={index}
-            type="text"
-            value={habit}
-            onChange={(e) => {
-              const updatedHabitTitles = [...challenge.habitTitles];
-              updatedHabitTitles[index] = e.target.value;
-              handleInputChange({ target: { name: 'habitTitles', value: updatedHabitTitles } });
-            }}
-            className="form-input1"
-            maxLength="129"
-            title="Please enter up to 129 characters and up to 4 daily habits per challenge"
-          />
+       <input
+       key={index}
+       type="text"
+       value={habit}
+       onChange={(e) => {
+           const updatedHabit = e.target.value;
+           const updatedHabitTitles = [...challenge.habitTitles];
+           updatedHabitTitles[index] = updatedHabit;
+           handleInputChange({ target: { name: 'habitTitles', value: updatedHabitTitles } });
+         
+       }}
+       className="form-input1"
+       title="Please enter up to 129 characters and up to 4 daily habits per challenge"
+     />
           ))}
           </div>
       </div>

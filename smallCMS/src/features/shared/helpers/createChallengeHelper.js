@@ -32,7 +32,12 @@ export const useCreateChallenge = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
+    const allHabitsValid = challengeData.habitTitles.every((habit) => habit.length <= 129);
+    if (!allHabitsValid) {
+      alert('Error: Please enter up to 129 characters for each habit');
+      return;
+    }
 
     try {
       const storageRef = ref(storage, `challengeImages/${selectedFile.name}`);

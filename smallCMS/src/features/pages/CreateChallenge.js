@@ -91,8 +91,8 @@ function CreateChallengePage() {
           value={challengeData.category}
           onChange={handleInputChange}
           required
-          pattern="^(Health|Environmental|Educational|Financial)$" 
-          title="Please enter a valid category (Health, Environmental, Educational, or Financial)"
+          pattern="^(Health|Environmental|Educational|Financial)(, (Health|Environmental|Educational|Financial))*$" 
+          title="Please enter one or more valid categories separated by a comma (,): Health, Environmental, Educational, Financial "
         />
 
         <label htmlFor="habitTitles">Challenge Habits:</label>
@@ -112,7 +112,6 @@ function CreateChallengePage() {
                 }));
               }}
               required={index===0}
-              maxLength={129}
               title="Please enter up to 129 characters and up to 4 daily habits per challenge"
             />
           ))}
