@@ -121,7 +121,8 @@ function EditChallenge() {
               handleInputChange({ target: { name: 'habitTitles', value: updatedHabitTitles } });
             }}
             className="form-input1"
-            title="Please enter up to 4 daily habits per challenge"
+            maxLength="129"
+            title="Please enter up to 129 characters and up to 4 daily habits per challenge"
           />
           ))}
           </div>
