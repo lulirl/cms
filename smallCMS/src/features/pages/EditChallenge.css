@@ -111,3 +111,8 @@
   .submitContainer{
     justify-content: 'center';
   }
+  .form-input-category{
+    text-align: left;
+    margin-left: 10px;
+    width: 80%;
+  }

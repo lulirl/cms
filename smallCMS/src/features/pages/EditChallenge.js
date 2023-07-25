@@ -9,7 +9,13 @@ function EditChallenge() {
     handleInputChange,
     handleImageUpload,
     handleSubmit,
+    categories,
+    handleCategorySelection, 
+    isOpen,
+    setIsOpen,
+    selectedCategories,
   } = useEditChallenge();
+
 
   if (!challenge) {
     return <div>Loading...</div>;
@@ -40,20 +46,7 @@ function EditChallenge() {
           title="Please enter a valid challenge name (3-50 characters, alphabets only)"
         />
       </div>
-      <div className="form-group">
-        <label htmlFor="category" className="form-label">Category:</label>
-        <input
-          type="text"
-          id="category"
-          name="category"
-          value={challenge.category}
-          onChange={handleInputChange}
-          className="form-input"
-          required
-          pattern="^(Health|Environmental|Educational|Financial)(, (Health|Environmental|Educational|Financial))*$" 
-          title="Please enter one or more valid categories separated by a comma (,): Health, Environmental, Educational, Financial "
-        />
-      </div>
+    
       <label htmlFor="image" className="form-label form-label-left">Picture (.jpg .png) :</label>
       <input
         id="image"
@@ -127,7 +120,34 @@ function EditChallenge() {
      />
           ))}
           </div>
+          
       </div>
+      <label className="form-label form-label-left" htmlFor="category">Category:</label>
+        <div className="custom-select" onClick={() => setIsOpen(!isOpen)}>
+          <input
+            type="text"
+            id="category"
+            className="form-input-category"
+            name="category"
+            value= {selectedCategories.map((selectedId) => {
+              const matchingCategory = categories?.find((category) => category?.id === selectedId);
+              return matchingCategory ? matchingCategory.title : null;
+            })}
+            onChange={handleInputChange}
+            readOnly
+            title='Select all the corresponding categories'
+          />
+          <span className={`arrow ${isOpen ? 'open' : ''}`}>&#9662;</span>
+          {isOpen && (
+          <div className={`options`}>
+            {categories.map((category) => (
+              <div key={category.id} onClick={() => handleCategorySelection(category.title)}>
+                {category.title}
+              </div>
+            ))}
+          </div>
+          )}
+        </div>
       <div className='submitContainer'>
       <button type="submit" className="submit-button">Update Challenge</button>
       </div>

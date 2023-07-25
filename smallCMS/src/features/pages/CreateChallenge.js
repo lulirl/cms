@@ -10,6 +10,11 @@ function CreateChallengePage() {
     handleImageUpload,
     handleInputChange,
     handleSubmit,
+    handleCategorySelection,
+    allCategories,
+    isOpen,
+    setIsOpen,
+    selectedCategories
   } = useCreateChallenge();
 
   return (
@@ -84,16 +89,27 @@ function CreateChallengePage() {
         />
 
         <label htmlFor="category">Category:</label>
-        <input
-          type="text"
-          id="category"
-          name="category"
-          value={challengeData.category}
-          onChange={handleInputChange}
-          required
-          pattern="^(Health|Environmental|Educational|Financial)(, (Health|Environmental|Educational|Financial))*$" 
-          title="Please enter one or more valid categories separated by a comma (,): Health, Environmental, Educational, Financial "
-        />
+        <div className="custom-select" onClick={() => setIsOpen(!isOpen)}>
+          <input
+            type="text"
+            id="category"
+            name="category"
+            value={selectedCategories.join(', ')}
+            onChange={handleInputChange}
+            readOnly
+            title='Select all the corresponding categories'
+          />
+          <span className={`arrow ${isOpen ? 'open' : ''}`}>&#9662;</span>
+          {isOpen && (
+          <div className={`options`}>
+            {allCategories.map((category) => (
+              <div key={category.id} onClick={() => handleCategorySelection(category.title)}>
+                {category.title}
+              </div>
+            ))}
+          </div>
+          )}
+        </div>
 
         <label htmlFor="habitTitles">Challenge Habits:</label>
         <div className="challenge-habits">

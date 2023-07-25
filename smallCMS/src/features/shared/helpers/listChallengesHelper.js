@@ -27,3 +27,18 @@ export const fetchChallenges = async () => {
     }
   };
   
+
+   export const fetchCategories = async () => {
+      try {
+        const collectionRef = collection(db, 'challengeCategories')
+        const snapshot = await getDocs(collectionRef);
+        const categoriesData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          title: doc.data().title,
+        }));
+       return categoriesData
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+ 

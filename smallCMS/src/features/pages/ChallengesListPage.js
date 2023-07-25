@@ -18,7 +18,7 @@ function ChallengesListPage() {
       const challengesData = await fetchChallenges();
       setChallenges(challengesData);
     };
-  
+
     fetchChallengesData();
   }, [challenges]);
 
@@ -49,7 +49,7 @@ function ChallengesListPage() {
       <div className="challenge-card" key={challenge.id}>
         <img className="challenge-image" src={challenge.picture} alt={challenge.challengeName} />
         <h3 className="challenge-name">{challenge.challengeName}</h3>
-        <p className="challenge-category">{challenge.category}</p>
+      
         <p className="challenge-description">{challenge.goalShort}</p>
         <div className="edit-container">
           <div>

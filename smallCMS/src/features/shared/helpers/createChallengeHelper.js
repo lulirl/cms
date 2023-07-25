@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
 import { storage, ref, getDownloadURL, uploadBytes, db } from '../../../appfirebase/firebase.ts';
+import  useNavigation  from '../../hooks/hooks.ts'
+import { fetchCategories } from './listChallengesHelper.js';
 
 export const useCreateChallenge = () => {
+  const navigate = useNavigation();
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
   const [challengeData, setChallengeData] = useState({
     challengeName: '',
     goal: '',
@@ -15,6 +21,14 @@ export const useCreateChallenge = () => {
     category: '',
     picture: ''
   });
+  useEffect(() => {
+    const fetchChallengesCategories= async () => {
+      const challengesCategories = await fetchCategories();
+      setAllCategories(challengesCategories);
+    };
+  
+    fetchChallengesCategories();
+  }, []);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -22,7 +36,13 @@ export const useCreateChallenge = () => {
     const imageUrl = URL.createObjectURL(file);
     setImageUrl(imageUrl);
   };
-
+  const handleCategorySelection = (category) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter((item) => item !== category));
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setChallengeData((prevData) => ({
@@ -49,15 +69,19 @@ export const useCreateChallenge = () => {
       challengeData.goal = challengeData.challengeName;
       challengeData.duration = Number(challengeData.duration);
       challengeData.habitTitles = challengeData.habitTitles.filter((habit) => habit.trim() !== '');
-    
+      challengeData.category = selectedCategories.map((selectedTitle) => {
+        const matchingCategory = allCategories.find((category) => category.title === selectedTitle);
+        return matchingCategory ? matchingCategory.id : null;
+      });
+      
       await addDoc(challengesRef, challengeData);
       alert('Challenge added successfully');
-
+      navigate("/")
     } catch (error) {
       alert('Error adding challenge:', error);
     }
   };
-
+  console.log(selectedCategories, allCategories, 'here')
   return {
     selectedFile,
     imageUrl,
@@ -65,6 +89,11 @@ export const useCreateChallenge = () => {
     handleImageUpload,
     handleInputChange,
     handleSubmit,
-    setChallengeData
+    setChallengeData, 
+    allCategories,
+    handleCategorySelection,
+    isOpen,
+    setIsOpen,
+    selectedCategories,
   };
 };
