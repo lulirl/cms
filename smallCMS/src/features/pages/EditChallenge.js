@@ -1,19 +1,20 @@
 import { Link } from 'react-router-dom';
 import { useEditChallenge } from '../shared/helpers/editHelpers';
 import './EditChallenge.css';
+import { useSelector } from 'react-redux/es/hooks/useSelector';
 
 function EditChallenge() {
+  const categories = useSelector((state)=> state.categories.data)
   const {
-    challenge,
     imageUrl,
     handleInputChange,
     handleImageUpload,
     handleSubmit,
-    categories,
     handleCategorySelection, 
     isOpen,
     setIsOpen,
     selectedCategories,
+    challenge,
   } = useEditChallenge();
 
 
@@ -103,7 +104,7 @@ function EditChallenge() {
       <div className="form-group">
         <label htmlFor="habitTitles" className="form-label">Challenge Habits:</label>
         <div className="habitsContainer">
-        {challenge.habitTitles.map((habit, index) => (
+        {challenge?.habitTitles?.map((habit, index) => (
        <input
        key={index}
        type="text"
@@ -129,7 +130,7 @@ function EditChallenge() {
             id="category"
             className="form-input-category"
             name="category"
-            value= {selectedCategories.map((selectedId) => {
+            value= {selectedCategories?.map((selectedId) => {
               const matchingCategory = categories?.find((category) => category?.id === selectedId);
               return matchingCategory ? matchingCategory.title : null;
             })}
@@ -140,7 +141,7 @@ function EditChallenge() {
           <span className={`arrow ${isOpen ? 'open' : ''}`}>&#9662;</span>
           {isOpen && (
           <div className={`options`}>
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <div key={category.id} onClick={() => handleCategorySelection(category.title)}>
                 {category.title}
               </div>

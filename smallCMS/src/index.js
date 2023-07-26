@@ -1,32 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './appfirebase/firebase.ts';
 import LoginForm from './features/pages/LoginForm.js';
 import ChallengesListPage from './features/pages/ChallengesListPage.js';
 import EditChallenge from './features/pages/EditChallenge.js';
 import CreateChallenge from './features/pages/CreateChallenge.js';
-
+import { Provider } from 'react-redux';
+import store from './store/index.js'
+import { useSelector } from 'react-redux'
 const App = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-
-        setUser(user);
-      } else {
-
-        setUser(null);
-      }
-    });
+  const stateUser = useSelector((state)=> state.auth.user)
 
 
-    return () => {
-      unsubscribe();
-    };
-  }, []);
 
   return (
     <React.StrictMode>
@@ -35,7 +20,7 @@ const App = () => {
           <Route path="/login" element={<LoginForm />} />
           <Route
             path="/"
-            element={user ? <ChallengesListPage /> : <LoginForm />}
+            element={stateUser ? <ChallengesListPage /> : <LoginForm />}
           />
           <Route path="/editChallenge/:id" element={<EditChallenge />} />
           <Route path="/create-new-challenge" element={<CreateChallenge />} />
@@ -45,7 +30,8 @@ const App = () => {
   );
 };
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+ReactDOM.createRoot(document.getElementById('root')).render(
+<Provider store={store}><App/></Provider>);
 
 
 

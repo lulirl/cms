@@ -1,45 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc,  updateDoc } from 'firebase/firestore';
 import { db, storage, ref, uploadBytes, getDownloadURL } from '../../../appfirebase/firebase.ts';
-import { fetchCategories } from './listChallengesHelper.js';
 import useNavigation from '../../hooks/hooks.ts';
+import { useSelector } from 'react-redux/es/hooks/useSelector.js';
+
 export const useEditChallenge = () => {
   const { id } = useParams();
-  const [challenge, setChallenge] = useState(null);
-  const [categories, setCategories] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState(null);
+  const [challenge, setChallenge] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const navigation = useNavigation();
+  const challenges = useSelector((state)=> state.challenges.data)
+  const categories = useSelector((state)=> state.categories.data)
   useEffect(() => {
-    const fetchChallenge = async () => {
-      try {
-        const docRef = doc(db, 'challengeTemplates', id);
-        const snapshot = await getDoc(docRef);
-        if (snapshot.exists()) {
-          setChallenge({ id: snapshot.id, ...snapshot.data() });
-          setSelectedCategories(snapshot.data().category)
-        } else {
-          console.log('Challenge not found');
-        }
-      } catch (error) {
-        console.error('Error fetching challenge:', error);
-      }
-    };
-    fetchChallenge()
-  }, [id]);
-
-  useEffect(() => {
-    const fetchAllCategories = async () => {
-      const challengesCategories = await fetchCategories();
-      setCategories(challengesCategories);
-    };
-    fetchAllCategories();
-  }, [])
-  
-
+    const challengeData = challenges.find((challenge) => challenge.id === id) || {};
+    setSelectedCategories(challengeData.category || []);
+    setChallenge(challengeData); 
+  }, [challenges, id]);
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setChallenge((prevChallenge) => ({
@@ -103,16 +83,16 @@ export const useEditChallenge = () => {
   };
 
   return {
-    challenge,
+    setChallenge,
     imageUrl,
     selectedFile,
     handleInputChange,
     handleImageUpload,
     handleSubmit,
-    categories,
     selectedCategories,
     handleCategorySelection,
     setIsOpen,
     isOpen,
+    challenge
   };
 };

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
-import { storage, ref, getDownloadURL, uploadBytes, db } from '../../../appfirebase/firebase.ts';
+import { storage, ref, getDownloadURL, uploadBytes, db, updateDoc, doc } from '../../../appfirebase/firebase.ts';
 import  useNavigation  from '../../hooks/hooks.ts'
-import { fetchCategories } from './listChallengesHelper.js';
+import { useSelector } from 'react-redux/es/hooks/useSelector.js';
 
 export const useCreateChallenge = () => {
   const navigate = useNavigation();
@@ -11,6 +11,7 @@ export const useCreateChallenge = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
+  const categories = useSelector((state)=> state.categories.data)
   const [challengeData, setChallengeData] = useState({
     challengeName: '',
     goal: '',
@@ -19,17 +20,14 @@ export const useCreateChallenge = () => {
     goalShort: '',
     habitTitles: ['', '', '', ''],
     category: '',
-    picture: ''
+    picture: '',
+    id:''
   });
-  useEffect(() => {
-    const fetchChallengesCategories= async () => {
-      const challengesCategories = await fetchCategories();
-      setAllCategories(challengesCategories);
-    };
-  
-    fetchChallengesCategories();
-  }, []);
 
+  useEffect(() => {
+    setAllCategories(categories)
+  }, [categories])
+  
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
@@ -65,6 +63,8 @@ export const useCreateChallenge = () => {
       const imageUrl = await getDownloadURL(storageRef);
 
       const challengesRef = collection(db, 'challengeTemplates');
+      const docRef = await addDoc(challengesRef, challengeData);
+      const newChallengeId = docRef.id;
       challengeData.picture = imageUrl;
       challengeData.goal = challengeData.challengeName;
       challengeData.duration = Number(challengeData.duration);
@@ -73,15 +73,15 @@ export const useCreateChallenge = () => {
         const matchingCategory = allCategories.find((category) => category.title === selectedTitle);
         return matchingCategory ? matchingCategory.id : null;
       });
-      
-      await addDoc(challengesRef, challengeData);
+      challengeData.id = newChallengeId;
+      const existingChallengeDoc = doc(db, 'challengeTemplates', newChallengeId);
+      await updateDoc(existingChallengeDoc, challengeData);
       alert('Challenge added successfully');
       navigate("/")
     } catch (error) {
       alert('Error adding challenge:', error);
     }
   };
-  console.log(selectedCategories, allCategories, 'here')
   return {
     selectedFile,
     imageUrl,
