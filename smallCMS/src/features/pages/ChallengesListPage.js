@@ -41,6 +41,7 @@ function ChallengesListPage() {
       </div>
       <div className="right-section">
         <Link to="/create-new-challenge" className="header-button">Create a New Challenge</Link>
+        <Link to="/create-new-category" className="header-button">Categories & Create a new category</Link>
         <button onClick={()=>handleLogout()} className="logout-button">Log Out</button>
       </div>
     </div>
