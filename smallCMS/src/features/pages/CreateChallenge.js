@@ -17,7 +17,7 @@ function CreateChallengePage() {
     setIsOpen,
     selectedCategories,
   } = useCreateChallenge();
-
+  console.log(imageUrl, "image");
   return (
     <>
       <div className="header1">

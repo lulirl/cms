@@ -54,7 +54,7 @@ function CreateCategoryPage() {
             name="categoryPhoto"
             className="input"
             accept="image/*"
-            onChange={handleImageUpload}
+            onChange={Upload}
             required
           />
           {categoryPhoto && (
