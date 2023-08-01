@@ -27,7 +27,7 @@ function CreateCategoryPage() {
           <Link to="/categories" className="header-button">
             Existing categories
           </Link>
-          <Link to="/create-new-category" className="header-button">
+          <Link to="/" className="header-button">
             Go back
           </Link>
         </div>
