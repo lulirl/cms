@@ -12,6 +12,7 @@ import {
 import { useSelector } from "react-redux";
 import { compressAndResizeImage } from "../helpers/imagesHelperCompresses.js";
 import useNavigation from "../../hooks/hooks.ts";
+import { iconData } from "./icons.js";
 
 export const useCreateCategory = () => {
   const [categoryName, setCategoryName] = useState("");
@@ -50,6 +51,13 @@ export const useCreateCategory = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const selectedIconName = selectedIcon?.type?.name.toString();
+    const defaultIconKey = "happy-outline";
+    console.log(selectedIconName, "iconname");
+    const selectedIconKey = Object.keys(iconData).find(
+      (key) => iconData[key] === selectedIconName
+    );
+
     const categoryNameLowercase = categoryName.toLowerCase();
     const categoryExists = categories.some(
       (category) => category.title.toLowerCase() === categoryNameLowercase
@@ -58,7 +66,7 @@ export const useCreateCategory = () => {
       const newCategoryData = {
         title: categoryName,
         photoUrl: categoryPhoto,
-        icon: selectedIcon?.type?.name ? selectedIcon.type.name : "LuSmilePlus",
+        icon: selectedIconName ? selectedIconKey : defaultIconKey,
       };
       const categoriesRef = collection(db, "challengeCategories");
       const docRef = await addDoc(categoriesRef, newCategoryData);

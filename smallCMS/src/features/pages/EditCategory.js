@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as LuIcons from "react-icons/lu"; // Import icons from react-icons/lu
 import * as GiIcons from "react-icons/gi"; // Import icons from react-icons/gi
-import * as GrIcons from "react-icons/gr";
 import { iconNames } from "../shared/helpers/icons";
 import { IconContext } from "react-icons";
 import { doc, updateDoc } from "firebase/firestore";
 import useNavigation from "../hooks/hooks.ts";
+import { iconData } from "../shared/helpers/icons";
 import { compressAndResizeImage } from "../shared/helpers/imagesHelperCompresses";
 import {
   db,
@@ -24,9 +24,9 @@ function EditCategory() {
   const [isIconListVisible, setIsIconListVisible] = useState(false);
   const [selectedCategory, setselectedCategory] = useState(null);
   const [selectedIcon, setSelectedIcon] = useState(null);
+  const [previousIcon, setPreviousIcon] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState(null);
-  const [library, setLibrary] = useState(null);
 
   const navigation = useNavigation();
 
@@ -35,20 +35,13 @@ function EditCategory() {
       categories?.find((category) => category?.id === id) || {};
     setselectedCategory(categoryData);
     setSelectedTitle(selectedCategory?.title);
-    if (selectedCategory?.icon || selectedIcon) {
-      if (selectedCategory.icon === "GrYoga" || selectedIcon === "GrYoga") {
-        setLibrary("react-icons/gr");
-      } else if (
-        selectedCategory.icon === "GiStrong" ||
-        selectedIcon === "GiStrong"
-      ) {
-        setLibrary("react-icons/gi");
-      } else {
-        setLibrary("react-icons/lu");
-      }
+    if (selectedCategory?.icon) {
+      const selectedIconEntry = Object.entries(iconData).find(
+        ([key, value]) =>
+          key === selectedCategory?.icon && setPreviousIcon(value)
+      );
     }
   }, [categories, id, selectedCategory, selectedIcon]);
-
   const handleInputChange = (event) => {
     setSelectedTitle(event.target.value);
   };
@@ -75,31 +68,30 @@ function EditCategory() {
       }
     }
   };
-  const getIconComponent = (library, name) => {
-    switch (library) {
-      case "react-icons/lu":
-        const LuIconComponent = LuIcons[name];
-        return <LuIconComponent size={30} color="black" />;
-      case "react-icons/gi":
-        const GiIconComponent = GiIcons[name];
-        return <GiIconComponent size={30} color="black" />;
-      case "react-icons/gr":
-        const GrIconComponent = GrIcons[name];
-        return <GrIconComponent size={30} color="black" />;
-      default:
-        return null;
+  const getIconComponent = (name) => {
+    console.log(name?.substring(0, 2), "here");
+    if (name?.substring(0, 2) === "Lu") {
+      const LuIconComponent = LuIcons[name];
+      return <LuIconComponent size={30} color="black" />;
+    }
+    if (name?.substring(0, 2) === "Gi") {
+      const GiIconComponent = GiIcons[name];
+      return <GiIconComponent size={30} color="black" />;
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      const selectedIconKey = Object.keys(iconData).find(
+        (key) => iconData[key] === selectedIcon
+      );
       const docRef = doc(db, "challengeCategories", id);
       const updatedCategory = {
         ...selectedCategory,
         title: selectedTitle ? selectedTitle : selectedCategory.title,
         photoUrl: selectedImage ? selectedImage : selectedCategory.photoUrl,
-        icon: selectedIcon ? selectedIcon : selectedCategory.icon,
+        icon: selectedIcon ? selectedIconKey : selectedCategory.icon,
       };
       await updateDoc(docRef, updatedCategory);
       alert("Category updated successfully");
@@ -116,6 +108,7 @@ function EditCategory() {
       icon: icon?.type?.name,
     }));
     setIsIconListVisible(!isIconListVisible);
+    console.log(selectedIcon, "en el handle");
   };
 
   return (
@@ -166,8 +159,9 @@ function EditCategory() {
         </div>
         <label htmlFor="categoryIcon">Category Icon:</label>
         {selectedCategory?.icon &&
+          previousIcon &&
           !selectedIcon &&
-          getIconComponent(library, selectedCategory?.icon)}
+          getIconComponent(previousIcon)}
         <button
           type="button"
           onClick={() => setIsIconListVisible(!isIconListVisible)}
@@ -209,7 +203,7 @@ function EditCategory() {
             })}
           </div>
         )}
-        <div>{selectedIcon && getIconComponent(library, selectedIcon)}</div>
+        <div>{selectedIcon && getIconComponent(selectedIcon)}</div>
         <div className="button-container-category">
           <button type="submit" className="submit-button">
             Update Category
