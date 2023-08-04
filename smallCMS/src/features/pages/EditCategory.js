@@ -27,7 +27,8 @@ function EditCategory() {
   const [previousIcon, setPreviousIcon] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState(null);
-
+  console.log(selectedCategory?.icon);
+  console.log(selectedIcon);
   const navigation = useNavigation();
 
   useEffect(() => {
