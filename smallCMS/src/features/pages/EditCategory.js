@@ -27,9 +27,7 @@ function EditCategory() {
   const [previousIcon, setPreviousIcon] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState(null);
-  console.log(selectedCategory?.icon);
-  console.log(previousIcon, "prev");
-  console.log(selectedIcon);
+
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -39,7 +37,6 @@ function EditCategory() {
     setSelectedTitle(categoryData?.title);
     if (categoryData?.icon) {
       const selectedIconValue = iconData[categoryData.icon];
-      //nombre de la libreria lu
       setPreviousIcon(selectedIconValue);
     }
   }, [categories, id, selectedCategory, selectedIcon]);
@@ -102,12 +99,12 @@ function EditCategory() {
   };
 
   const handleIconClick = (icon) => {
-    const iconName = icon?.type?.name;
-    setSelectedIcon(iconName);
-    console.log(selectedIcon, "en el handle");
+    setSelectedIcon(icon);
+
     setIsIconListVisible(!isIconListVisible);
   };
-
+  console.log(selectedIcon, "selectedIcon");
+  console.log(previousIcon, "previous");
   return (
     <>
       <div className="header1">
@@ -185,16 +182,13 @@ function EditCategory() {
             }}
           >
             {iconNames.map((iconName, index) => {
-              const IconComponent = React.createElement(eval(iconName));
               return (
                 <div
                   key={index}
-                  onClick={() => handleIconClick(IconComponent)}
+                  onClick={() => handleIconClick(iconName)} // Pass the iconName directly
                   style={{ cursor: "pointer", margin: "5px" }}
                 >
-                  <IconContext.Provider value={{ size: "2em", color: "black" }}>
-                    {IconComponent}
-                  </IconContext.Provider>
+                  {getIconComponent(iconName)}
                 </div>
               );
             })}
