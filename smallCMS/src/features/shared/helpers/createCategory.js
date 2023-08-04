@@ -53,7 +53,6 @@ export const useCreateCategory = () => {
     e.preventDefault();
     const selectedIconName = selectedIcon?.type?.name.toString();
     const defaultIconKey = "happy-outline";
-    console.log(selectedIconName, "iconname");
     const selectedIconKey = Object.keys(iconData).find(
       (key) => iconData[key] === selectedIconName
     );

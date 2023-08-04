@@ -70,14 +70,12 @@ function EditCategory() {
     }
   };
   const getIconComponent = (name) => {
-    console.log(name?.substring(0, 2), "here");
-    if (name?.substring(0, 2) === "Lu") {
-      const LuIconComponent = LuIcons[name];
-      return <LuIconComponent size={30} color="black" />;
-    }
     if (name?.substring(0, 2) === "Gi") {
       const GiIconComponent = GiIcons[name];
       return <GiIconComponent size={30} color="black" />;
+    } else {
+      const LuIconComponent = LuIcons[name];
+      return <LuIconComponent size={30} color="black" />;
     }
   };
 
@@ -109,7 +107,6 @@ function EditCategory() {
       icon: icon?.type?.name,
     }));
     setIsIconListVisible(!isIconListVisible);
-    console.log(selectedIcon, "en el handle");
   };
 
   return (
