@@ -36,12 +36,10 @@ function EditCategory() {
     const categoryData =
       categories?.find((category) => category?.id === id) || {};
     setselectedCategory(categoryData);
-    setSelectedTitle(selectedCategory?.title);
-    if (selectedCategory?.icon) {
-      const selectedIconEntry = Object.entries(iconData).find(
-        ([key, value]) =>
-          key === selectedCategory?.icon && setPreviousIcon(value)
-      );
+    setSelectedTitle(categoryData?.title);
+    if (categoryData?.icon) {
+      const selectedIconValue = iconData[categoryData.icon];
+      setPreviousIcon(selectedIconValue);
     }
   }, [categories, id, selectedCategory, selectedIcon]);
   const handleInputChange = (event) => {
