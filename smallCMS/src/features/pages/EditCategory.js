@@ -39,6 +39,7 @@ function EditCategory() {
     setSelectedTitle(categoryData?.title);
     if (categoryData?.icon) {
       const selectedIconValue = iconData[categoryData.icon];
+      //nombre de la libreria lu
       setPreviousIcon(selectedIconValue);
     }
   }, [categories, id, selectedCategory, selectedIcon]);
@@ -91,6 +92,7 @@ function EditCategory() {
         photoUrl: selectedImage ? selectedImage : selectedCategory.photoUrl,
         icon: selectedIcon ? selectedIconKey : selectedCategory.icon,
       };
+      console.log(updatedCategory);
       await updateDoc(docRef, updatedCategory);
       alert("Category updated successfully");
       navigation("/");
@@ -100,11 +102,9 @@ function EditCategory() {
   };
 
   const handleIconClick = (icon) => {
-    setSelectedIcon(icon?.type?.name);
-    setselectedCategory((prevCategory) => ({
-      ...prevCategory,
-      icon: icon?.type?.name,
-    }));
+    const iconName = icon?.type?.name;
+    setSelectedIcon(iconName);
+    console.log(selectedIcon, "en el handle");
     setIsIconListVisible(!isIconListVisible);
   };
 
