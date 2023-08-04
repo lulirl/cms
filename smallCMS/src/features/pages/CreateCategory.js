@@ -6,6 +6,7 @@ import { IconContext } from "react-icons";
 import { iconNames } from "../shared/helpers/icons";
 function CreateCategoryPage() {
   const {
+    getIconComponent,
     handleSubmit,
     setCategoryName,
     handleIconClick,
@@ -92,9 +93,7 @@ function CreateCategoryPage() {
             }}
           >
             {selectedIcon ? (
-              <IconContext.Provider value={{ size: "2em", color: "black" }}>
-                {selectedIcon}
-              </IconContext.Provider>
+              getIconComponent(selectedIcon)
             ) : (
               <span className="subTitle">Select an icon</span>
             )}
@@ -118,22 +117,13 @@ function CreateCategoryPage() {
               }}
             >
               {iconNames.map((iconName, index) => {
-                const IconComponent = React.createElement(eval(iconName));
                 return (
                   <div
                     key={index}
-                    onClick={() => handleIconClick(IconComponent)}
+                    onClick={() => handleIconClick(iconName)} // Pass the iconName directly
                     style={{ cursor: "pointer", margin: "5px" }}
                   >
-                    <IconContext.Provider
-                      value={{
-                        size: "2em",
-                        color:
-                          selectedIcon === IconComponent ? "blue" : "black",
-                      }}
-                    >
-                      {IconComponent}
-                    </IconContext.Provider>
+                    {getIconComponent(iconName)}
                   </div>
                 );
               })}

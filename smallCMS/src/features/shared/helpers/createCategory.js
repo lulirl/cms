@@ -1,5 +1,8 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { collection, addDoc } from "firebase/firestore";
+import * as LuIcons from "react-icons/lu"; // Import icons from react-icons/lu
+import * as GiIcons from "react-icons/gi"; // Import icons from react-icons/gi
 import {
   storage,
   ref,
@@ -79,6 +82,15 @@ export const useCreateCategory = () => {
       alert("Error: The category has already been created");
     }
   };
+  const getIconComponent = (name) => {
+    if (name?.substring(0, 2) === "Gi") {
+      const GiIconComponent = GiIcons[name];
+      return <GiIconComponent size={30} color="black" />;
+    } else {
+      const LuIconComponent = LuIcons[name];
+      return <LuIconComponent size={30} color="black" />;
+    }
+  };
 
   return {
     handleSubmit,
@@ -93,5 +105,6 @@ export const useCreateCategory = () => {
     selectedIcon,
     isIconListVisible,
     compressAndResizeImage,
+    getIconComponent,
   };
 };
