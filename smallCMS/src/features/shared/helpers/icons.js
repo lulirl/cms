@@ -65,7 +65,7 @@ export const iconData = {
   "restaurant-outline": "LuUtensils",
   "medal-outline": "LuMedal",
   "leaf-outline": "LuTrees",
-  "logo-usd": "LuDollarSign",
+  "md-cash-outline": "LuDollarSign",
   wifi: "LuWifi",
   "flask-outline": "LuTestTubes",
   "fitness-outline": "GiStrong",
