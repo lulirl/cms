@@ -5,7 +5,7 @@ function DynamicDeepLink() {
   const { screen, challengeId, senderId, isCustom } = useParams();
 
   useEffect(() => {
-    const deepLinkURL = `exp://10.10.11.154:19000/--/${screen}?challengeId=${challengeId}&senderId=${senderId}&isCustom=${isCustom}`;
+    const deepLinkURL = `com.smallandsimple.ios//${screen}?challengeId=${challengeId}&senderId=${senderId}&isCustom=${isCustom}`;
     
     window.location.href = deepLinkURL;
 
