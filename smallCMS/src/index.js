@@ -35,9 +35,12 @@ const App = () => {
           <Route path="/editChallenge/:id" element={<EditChallenge />} />
           <Route path="/create-new-challenge" element={<CreateChallenge />} />
           <Route path="/create-new-category" element={<CreateCategoryPage />} />
-          <Route path="c" element={<CategoriesPage />} />
+          <Route path="categories" element={<CategoriesPage />} />
           <Route path="/editCategory/:id" element={<EditCategory />} />
-          <Route path="/deepLink/:screen/:challengeId/:senderId/:isCustom" element={<DynamicDeepLink />} />
+          <Route
+            path="/deepLink/:screen/:challengeId/:senderId/:isCustom"
+            element={<DynamicDeepLink />}
+          />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
