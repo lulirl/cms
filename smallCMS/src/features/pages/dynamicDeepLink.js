@@ -10,7 +10,7 @@ function DynamicDeepLink() {
     window.location.href = deepLinkURL;
 
     setTimeout(() => {
-      window.location.href = "https://apps.apple.com/apps";  // replace with your App Store URL
+      window.location.href = "https://apps.apple.com/";  // replace with your App Store URL
     }, 500);
 
   }, [screen, challengeId, senderId, isCustom]);
