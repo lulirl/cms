@@ -4,36 +4,16 @@ import { useParams } from 'react-router-dom';
 function DynamicDeepLink() {
   const { screen, challengeId, senderId, isCustom } = useParams();
 
+    
+
   useEffect(() => {
-    const deeplink = () => {
-      let ua = navigator.userAgent.toLowerCase();
-      let isIphone = ua.indexOf('iphone') > -1;
-  
-      if (isIphone) {
-        let app = {
-          launchApp: function () {
-            window.open(
-              `exp://10.10.11.154:19000/--/${screen}?challengeId=${challengeId}&senderId=${senderId}&isCustom=${isCustom}`,
-              '_blank'
-            );
-          }
-        };
-        app.launchApp();
-      } else {
-  
-        let app = {
-          openWebApp: function () {
-            window.open(
-              'https://apps.apple.com/',
-              '_blank'
-            );
-          },
-        };
-  
-        app.openWebApp();
-      }
-  }
-  deeplink();
+    const deepLinkURL = `exp://10.10.11.154:19000/--/${screen}?challengeId=${challengeId}&senderId=${senderId}&isCustom=${isCustom}`;
+    
+    window.location.href = deepLinkURL;
+
+    setTimeout(() => {
+      window.location.href = "https://apps.apple.com/";  // replace with your App Store URL
+    }, 500);
 
   }, [screen, challengeId, senderId, isCustom]);
 
