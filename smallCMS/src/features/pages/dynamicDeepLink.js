@@ -5,12 +5,12 @@ function DynamicDeepLink() {
   const { screen, challengeId, senderId, isCustom } = useParams();
 
   useEffect(() => {
-    const deepLinkURL = `com.smallandsimple.ios//${screen}?challengeId=${challengeId}&senderId=${senderId}&isCustom=${isCustom}`;
+    const deepLinkURL = `exp://10.10.11.154:19000/--/${screen}?challengeId=${challengeId}&senderId=${senderId}&isCustom=${isCustom}`;
     
     window.location.href = deepLinkURL;
 
     setTimeout(() => {
-      window.location.href = "https://apps.apple.com/";  // replace with your App Store URL
+      window.location.href = "https://apps.apple.com/apps";  // replace with your App Store URL
     }, 500);
 
   }, [screen, challengeId, senderId, isCustom]);
