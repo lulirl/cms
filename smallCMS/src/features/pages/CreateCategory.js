@@ -16,6 +16,8 @@ function CreateCategoryPage() {
     categoryName,
     handleImageUpload,
     selectedIcon,
+    setCategoryDescription,
+    categoryDescription,
   } = useCreateCategory();
 
   return (
@@ -46,7 +48,18 @@ function CreateCategoryPage() {
             required
           />
         </div>
-
+        <div>
+          <label htmlFor="categoryName">Category Description:</label>
+          <input
+            type="text"
+            id="categoryDescription"
+            name="categoryDescription"
+            value={categoryDescription}
+            className="input"
+            onChange={(e) => setCategoryDescription(e.target.value)}
+            required
+          />
+        </div>
         <div>
           <label htmlFor="categoryPhoto">Category Photo:</label>
           <input

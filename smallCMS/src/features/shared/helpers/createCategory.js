@@ -19,6 +19,7 @@ import { iconData } from "./icons.js";
 
 export const useCreateCategory = () => {
   const [categoryName, setCategoryName] = useState("");
+  const [categoryDescription, setCategoryDescription] = useState("");
   const [categoryPhoto, setCategoryPhoto] = useState("");
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [isIconListVisible, setIsIconListVisible] = useState(false);
@@ -69,6 +70,7 @@ export const useCreateCategory = () => {
         title: categoryName,
         photoUrl: categoryPhoto,
         icon: selectedIconName ? selectedIconKey : defaultIconKey,
+        description: categoryDescription,
       };
       const categoriesRef = collection(db, "challengeCategories");
       const docRef = await addDoc(categoriesRef, newCategoryData);
@@ -106,5 +108,7 @@ export const useCreateCategory = () => {
     isIconListVisible,
     compressAndResizeImage,
     getIconComponent,
+    setCategoryDescription,
+    categoryDescription,
   };
 };

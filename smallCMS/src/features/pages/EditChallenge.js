@@ -16,6 +16,11 @@ function EditChallenge() {
     setIsOpen,
     selectedCategories,
     challenge,
+    isExpandable,
+    setIsExpandable,
+    handlePeriodicitySelection,
+    selectingPeriodicity,
+    selectedPeriodicity,
   } = useEditChallenge();
 
   if (!challenge) {
@@ -179,6 +184,37 @@ function EditChallenge() {
                     onClick={() => handleCategorySelection(category.title)}
                   >
                     {category.title}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <label className="form-label form-label-left" htmlFor="peridocity">
+            Periodicity:
+          </label>
+          <div
+            className="custom-select"
+            onClick={() => setIsExpandable(!isExpandable)}
+          >
+            <input
+              type="text"
+              id="periodicity"
+              className="form-input-category"
+              name="periodicity"
+              value={challenge.periodicity ? challenge.periodicity : "daily"}
+              onChange={handleInputChange}
+              readOnly
+              title="Select the challenge periodicity"
+            />
+            <span className={`arrow ${isOpen ? "open" : ""}`}>&#9662;</span>
+            {isExpandable && (
+              <div className={`options`}>
+                {selectingPeriodicity?.map((periodicity) => (
+                  <div
+                    key={Math.random()}
+                    onClick={() => handlePeriodicitySelection(periodicity)}
+                  >
+                    {periodicity}
                   </div>
                 ))}
               </div>

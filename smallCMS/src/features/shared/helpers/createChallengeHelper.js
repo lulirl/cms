@@ -18,9 +18,12 @@ export const useCreateChallenge = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedPeriodicity, setSelectedPeriodicity] = useState("");
   const [allCategories, setAllCategories] = useState([]);
   const categories = useSelector((state) => state.categories.data);
+  const periodicity = ["weekly", "monthly", "daily"];
   const [challengeData, setChallengeData] = useState({
     challengeName: "",
     goal: "",
@@ -31,6 +34,7 @@ export const useCreateChallenge = () => {
     category: "",
     picture: "",
     id: "",
+    periodicity: "",
   });
 
   useEffect(() => {
@@ -61,6 +65,15 @@ export const useCreateChallenge = () => {
       );
     } else {
       setSelectedCategories([...selectedCategories, category]);
+    }
+  };
+  const handlePeridocitySelection = (periodicity) => {
+    if (selectedPeriodicity.includes(periodicity)) {
+      setSelectedPeriodicity(
+        selectedPeriodicity.filter((item) => item !== periodicity)
+      );
+    } else {
+      setSelectedPeriodicity(periodicity);
     }
   };
   const handleInputChange = (e) => {
@@ -101,6 +114,11 @@ export const useCreateChallenge = () => {
         );
         return matchingCategory ? matchingCategory.id : null;
       });
+      if (challengeData.periodicity !== "daily") {
+        challengeData.periodicity = selectedPeriodicity;
+      } else {
+        delete challengeData.periodicity;
+      }
       challengeData.id = newChallengeId;
       const existingChallengeDoc = doc(
         db,
@@ -127,5 +145,10 @@ export const useCreateChallenge = () => {
     isOpen,
     setIsOpen,
     selectedCategories,
+    selectedPeriodicity,
+    handlePeridocitySelection,
+    periodicity,
+    isExpanded,
+    setIsExpanded,
   };
 };

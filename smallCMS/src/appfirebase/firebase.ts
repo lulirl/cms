@@ -15,6 +15,7 @@ import {
     setDoc,
     updateDoc,
     where,
+    deleteField,
   } from 'firebase/firestore';
   import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
   import {
@@ -67,5 +68,6 @@ export {
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
+    deleteField
   };
   

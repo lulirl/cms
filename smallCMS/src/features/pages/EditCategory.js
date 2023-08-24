@@ -22,7 +22,7 @@ function EditCategory() {
   const { id } = useParams();
   const categories = useSelector((state) => state.categories.data);
   const [isIconListVisible, setIsIconListVisible] = useState(false);
-  const [selectedCategory, setselectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState({});
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [previousIcon, setPreviousIcon] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -33,16 +33,17 @@ function EditCategory() {
   useEffect(() => {
     const categoryData =
       categories?.find((category) => category?.id === id) || {};
-    setselectedCategory(categoryData);
-    setSelectedTitle(categoryData?.title);
-    if (categoryData?.icon) {
-      const selectedIconValue = iconData[categoryData.icon];
-      setPreviousIcon(selectedIconValue);
-    }
-  }, [categories, id, selectedCategory, selectedIcon]);
+    setSelectedCategory(categoryData);
+  }, [categories, id]);
   const handleInputChange = (event) => {
-    setSelectedTitle(event.target.value);
+    const { name, value } = event.target;
+    if (name === "categoryName") {
+      setSelectedCategory((prev) => ({ ...prev, title: value }));
+    } else if (name === "categoryDescription") {
+      setSelectedCategory((prev) => ({ ...prev, description: value }));
+    }
   };
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -56,11 +57,7 @@ function EditCategory() {
         const storageRef = ref(storage, `categoryImages/${file.name}`);
         await uploadBytes(storageRef, compressedImage);
         const imageUrl = await getDownloadURL(storageRef);
-        setSelectedImage(imageUrl);
-        setselectedCategory((prevCategory) => ({
-          ...prevCategory,
-          photoUrl: selectedImage,
-        }));
+        setSelectedCategory((prev) => ({ ...prev, photoUrl: imageUrl }));
       } catch (error) {
         console.error("Error uploading the image:", error);
       }
@@ -85,9 +82,7 @@ function EditCategory() {
       const docRef = doc(db, "challengeCategories", id);
       const updatedCategory = {
         ...selectedCategory,
-        title: selectedTitle ? selectedTitle : selectedCategory.title,
-        photoUrl: selectedImage ? selectedImage : selectedCategory.photoUrl,
-        icon: selectedIcon ? selectedIconKey : selectedCategory.icon,
+        icon: selectedIconKey || selectedCategory.icon,
       };
       console.log(updatedCategory);
       await updateDoc(docRef, updatedCategory);
@@ -125,7 +120,17 @@ function EditCategory() {
             className="form-input"
           />
         </div>
-
+        <div>
+          <label htmlFor="categoryName">Category Description:</label>
+          <input
+            type="text"
+            id="categoryDescription"
+            name="categoryDescription"
+            value={selectedCategory?.description}
+            onChange={handleInputChange}
+            className="form-input"
+          />
+        </div>
         <div>
           <label htmlFor="categoryPhoto">Category Photo:</label>
           <input

@@ -16,6 +16,11 @@ function CreateChallengePage() {
     isOpen,
     setIsOpen,
     selectedCategories,
+    handlePeridocitySelection,
+    selectedPeriodicity,
+    periodicity,
+    isExpanded,
+    setIsExpanded,
   } = useCreateChallenge();
 
   return (
@@ -37,10 +42,9 @@ function CreateChallengePage() {
             value={challengeData.challengeName}
             onChange={handleInputChange}
             minLength="3"
-            maxLength="50"
+            maxLength="30"
             required
-            pattern="^[a-zA-Z\s]+$"
-            title="Please enter a valid challenge name (3-50 characters, alphabets only)"
+            title="Please enter a valid challenge name (3-30 characters)"
           />
           <label htmlFor="image">Picture (.jpg .png) :</label>
           <input
@@ -141,7 +145,34 @@ function CreateChallengePage() {
               />
             ))}
           </div>
-
+          <label htmlFor="periodicity">Periodicity:</label>
+          <div
+            className="custom-select"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            <input
+              type="text"
+              id="periodicity"
+              name="periodicity"
+              value={selectedPeriodicity}
+              onChange={handleInputChange}
+              readOnly
+              title="Select the challenge periodicity"
+            />
+            <span className={`arrow ${isExpanded ? "open" : ""}`}>&#9662;</span>
+            {isExpanded && (
+              <div className={`options`}>
+                {periodicity.map((periodicity) => (
+                  <div
+                    key={Math.random()}
+                    onClick={() => handlePeridocitySelection(periodicity)}
+                  >
+                    {periodicity}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <button type="submit">Create Challenge</button>
         </form>
       </div>
