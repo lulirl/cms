@@ -4,14 +4,21 @@ import { useParams } from 'react-router-dom';
 function DynamicDeepLink() {
   const { screen, challengeId, senderId, isCustom } = useParams();
 
-  useEffect(() => {
-    const deepLinkURL = `com.smallandsimple.ios//${screen}?challengeId=${challengeId}&senderId=${senderId}&isCustom=${isCustom}`;
+    
+
+useEffect(() => {
+    const deepLinkURL = `com.smallandsimple.ios://${screen}?challengeId=${challengeId}&senderId=${senderId}&isCustom=${isCustom}`;
     
     window.location.href = deepLinkURL;
 
-    setTimeout(() => {
-      window.location.href = "https://apps.apple.com/";  // replace with your App Store URL
-    }, 500);
+    const timer = setTimeout(() => {
+      if (document.hidden) {
+        return;
+      }
+      window.location.href = "https://apps.apple.com/";
+    }, 1500);
+
+    return () => clearTimeout(timer);
 
   }, [screen, challengeId, senderId, isCustom]);
 
