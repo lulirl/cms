@@ -7,20 +7,21 @@ function DynamicDeepLink() {
     
 
 useEffect(() => {
-    const deepLinkURL = `com.smallandsimple.ios://${screen}?challengeId=${challengeId}&senderId=${senderId}&isCustom=${isCustom}`;
-    
-    window.location.href = deepLinkURL;
+  const deepLinkURL = `com.smallandsimple.ios://${screen}?challengeId=${challengeId}&senderId=${senderId}&isCustom=${isCustom}`;
+  window.location.href = deepLinkURL;
 
-    const timer = setTimeout(() => {
-      if (document.hidden) {
-        return;
-      }
+  const handleVisibilityChange = () => {
+    if (!document.hidden) {
       window.location.href = "https://apps.apple.com/";
-    }, 1500);
+    }
+  };
 
-    return () => clearTimeout(timer);
+  document.addEventListener('visibilitychange', handleVisibilityChange);
 
-  }, [screen, challengeId, senderId, isCustom]);
+  return () => {
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
+  };
+}, [screen, challengeId, senderId, isCustom]);
 
   return <div>Redirecting...</div>;
 }
