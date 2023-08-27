@@ -12,7 +12,7 @@ useEffect(() => {
 
   const handleVisibilityChange = () => {
     if (!document.hidden) {
-      window.location.href = "https://apps.apple.com/apps";
+      window.location.href = "https://apps.apple.com/";
     }
   };
 
