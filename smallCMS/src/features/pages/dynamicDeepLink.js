@@ -15,6 +15,7 @@ function DynamicDeepLink() {
       // Only redirect to App Store if we tried opening the app and it's still in the foreground
       if (attemptedToOpenApp && !document.hidden) {
         window.location.href = "https://apps.apple.com/";
+        setAttemptedToOpenApp(false);
       }
     };
 
