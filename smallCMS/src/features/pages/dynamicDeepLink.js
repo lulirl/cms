@@ -19,7 +19,7 @@ useEffect(() => {
         return;
       }
       window.location.href = "https://apps.apple.com/";
-    }, 4000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
