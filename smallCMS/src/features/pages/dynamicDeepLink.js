@@ -11,6 +11,9 @@ useEffect(() => {
     
     window.location.href = deepLinkURL;
 
+  }, [screen, challengeId, senderId, isCustom]);
+
+useEffect(() => {
     const timer = setTimeout(() => {
       if (document.hidden) {
         return;
@@ -19,8 +22,7 @@ useEffect(() => {
     }, 4000);
 
     return () => clearTimeout(timer);
-
-  }, [screen, challengeId, senderId, isCustom]);
+  }, []);
 
   return <div>Redirecting...</div>;
 }
