@@ -18,7 +18,7 @@ useEffect(() => {
       if (document.hidden) {
         return;
       }
-      window.location.href = "https://apps.apple.com/";
+      window.location.href = "https://apps.apple.com/apps";
     }, 3000);
 
     return () => clearTimeout(timer);
