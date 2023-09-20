@@ -18,7 +18,7 @@ useEffect(() => {
       if (document.hidden) {
         return;
       }
-      window.location.href = "https://apps.apple.com/apps";
+      window.location.href = "https://apps.apple.com/us/app/small-and-simple/id1661062603";
     }, 3000);
 
     return () => clearTimeout(timer);
